@@ -1,4 +1,4 @@
-FROM alpine:3.12
+FROM alpine:3.20.0
 
 LABEL net.juniper.description="Junos PyEZ library for Python in a lightweight container." \
       net.juniper.maintainer="Stephen Steiner <ssteiner@juniper.net>"
