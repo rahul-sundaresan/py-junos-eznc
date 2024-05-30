@@ -1,7 +1,7 @@
 FROM alpine:3.20.0
 
 LABEL net.juniper.description="Junos PyEZ library for Python in a lightweight container." \
-      net.juniper.maintainer="Stephen Steiner <ssteiner@juniper.net>"
+    net.juniper.maintainer="Stephen Steiner <ssteiner@juniper.net>"
 
 WORKDIR /source
 
@@ -9,20 +9,16 @@ WORKDIR /source
 ADD setup.* ./
 ADD versioneer.py .
 ADD requirements.txt .
-ADD lib lib 
-ADD entrypoint.sh /usr/local/bin/.
+COPY lib lib
+COPY --chmod=777 entrypoint.sh /usr/local/bin/
 
-## Install dependancies and PyEZ
-RUN apk add --no-cache build-base python3-dev py-lxml \
-    libxslt-dev libxml2-dev libffi-dev openssl-dev curl \
-    ca-certificates py3-pip bash \
-    && pip install -U pip \
-    && pip install -r requirements.txt \
-    && apk del -r --purge gcc make g++ \
-    && ln -s /usr/bin/python3 /usr/bin/python \
-    && pip install . \
-    && rm -rf /source/* \
-    && chmod +x /usr/local/bin/entrypoint.sh
+## Install dependencies and PyEZ
+RUN apk add --no-cache build-base python3-dev py3-pip libffi-dev bash \
+    && python3 -m venv .venv \
+    && source .venv/bin/activate \
+    && python3 -m pip install -r requirements.txt \
+    && python3 -m pip install . \
+    && rm -rf /source/*
 
 WORKDIR /scripts
 
